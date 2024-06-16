@@ -1,37 +1,71 @@
+# this code contains basic linear models
+# LUNA-R is an educational project, meaning it can not be used in product development
+# and is not as customizable as scikit-learn or something like this
+# Code is under MIT license meaning it's free to share, copy, and use
+
+import Main.configurations.cfg as cfg
+from Main.tools.validator import validate_input
+from Main.components.loss import mean_squared_error
+from main_classes import Model
+from Main.tools.funcs import sigmoid
+
 import numpy as np
-import matplotlib.pyplot as plt
 
 
-class LinearRegression:
-    def __init__(self, fit_intercept=True):
-        self.weights = None
-        self.bias = None
-        self.fit_intercept = fit_intercept
-        self.loss_history = []
+class LinearRegression(Model):
+    def __init__(self):
+        super().__init__()
+        self.sup_loss = cfg.supported_loss['linear_reg']
 
-    def fit(self, X, y, learning_rate=1, n_epochs=100):
+    def fit(self, X, y, epochs=100, lr=0.001, loss='mse'):
         n_samples, n_features = X.shape
+        validate_input(X, y, epochs, lr, loss, self.sup_loss)  # check if everything is ok
 
+        self.loss_fn = cfg.losses_addr[loss]
         self.weights = np.zeros(n_features)
         self.bias = 0
 
-        for epoch in range(n_epochs):
+        for epoch in range(epochs):
             predictions = self.predict(X)
+            self.loss_history.append(self.loss_fn(y, predictions))
+
+            print(f'On Epoch {epoch} loss is {self.loss_fn(y, predictions)}')
 
             dw = (1 / n_samples) * np.dot(X.T, (predictions - y))
-            db = 0
-            if self.fit_intercept:
-                db = (1 / n_samples) * np.sum(predictions - y)
+            db = (1 / n_samples) * np.sum(predictions - y)
 
-            self.weights -= dw * learning_rate
-            self.bias -= db * learning_rate
-
-        return self
+            self.weights -= 1 / n_samples * dw * lr
+            self.bias -= 1 / n_samples * db * lr
 
     def predict(self, X):
         return np.dot(X, self.weights) + self.bias
 
 
-model = LinearRegression()
-model = model.fit(np.array([[1], [3]]), np.array([2, 6]), learning_rate=0.01)
-print(model.weights, model.bias)
+# Logistic Regression
+class LogisticRegression(Model):
+    def __init__(self):
+        super().__init__()
+        self.sup_loss = cfg.supported_loss['logistic_reg']
+
+    def fit(self, y, X, epochs=100, lr=0.001, loss='binary_crossentropy'):
+        n_samples, n_features = X.shape
+        validate_input(X, y, epochs, lr, loss, self.sup_loss)  # check if everything is ok
+        self.loss_fn = cfg.losses_addr[loss]
+
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+
+        for epoch in range(epochs):
+            predictions = sigmoid(np.dot(X, self.weights) + self.bias)
+            self.loss_history.append(self.loss_fn(y, predictions))
+
+            print(f'On Epoch {epoch} loss is {cfg.losses_addr[loss](y, predictions)}')
+
+            dw = (1 / n_samples) * np.dot(X.T, (predictions - y))
+            db = (1 / n_samples) * np.sum(predictions - y)
+
+            self.weights -= dw * lr
+            self.bias -= db * lr
+
+    def predict(self, X):
+        return sigmoid(np.dot(X, self.weights) + self.bias)

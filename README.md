@@ -107,3 +107,8 @@ ___
   
 
 <h2  align="center">MLP Class for building Multi-Layer Perceptrons!</h2>
+
+
+___
+
+Okay... Currently working on Fork of Karpathy/micrograd to make it Tensor-based

@@ -24,13 +24,12 @@
 
 <p  id="description"  align='center'>Made by enthusiast for enthusiasts.</p><br>
 
-  
-
-  
-
-<p  align='center'>Extends Venchislav/LUNA-R</p><br>
+<p  align='center'><h3 align="center">Extends Venchislav/LUNA-R</h3></p><br>
+<p  align='center'>PLANS</p><br>
+<p  align='center'>Code is better</p><br>
+<p  align='center'>More algorithms</p><br>
+<p  align='center'>Code is more flexible</p><br>
 
 ___
 
-  
-
+<p  align='center'>Btw. old code is available at "legacy" branch or at Venchislav/LUNA-R</p><br>

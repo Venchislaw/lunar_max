@@ -11,23 +11,23 @@ import numpy as np
 
 # CODE IS NOT TESTED SORRY
 class LinearRegression:
-    def __init__(self, learning_rate=0.01, fit_intercept=True, method="GD"):
+    def __init__(self, learning_rate=0.001, fit_intercept=True, method="GD"):
         self.learning_rate = learning_rate
         self.fit_intercept = fit_intercept
         self.method = method
         self.weights = None
         self.bias = 0
     
-    def fit(self, X, y, iterations=1_000):
+    def fit(self, X, y, iterations=1_300):
         # GD stands for Gradient Descent optimization method
         # Read the details in Journal.md
+        m_samples, n_features = X.shape
         if self.method == "GD":
-            m_samples, n_features = X.shape
             if len(y.shape) == 1:
                 y = y.reshape(1, -1)
-            self.weights = np.zeros(n_features, 1)
+            self.weights = np.zeros((n_features, 1))
 
-            for iteration in range("iterations"):
+            for iteration in range(iterations):
                 prediction = self.predict(X)
                 cost = self.cost_fn(y, prediction)
                 print(f"Iteration: {iteration} | Cost: {cost}")
@@ -43,17 +43,17 @@ class LinearRegression:
 
         elif self.method == "OLS":
             if self.fit_intercept:
-                X = np.append(X, np.ones(m_samples, 1), 1)
+                X = np.append(X, np.ones((m_samples, 1)), 1)
             self.parameters = np.dot(np.dot(np.linalg.inv(np.dot(X.T, X)), X.T), y)
             self.residual = np.sum((y - np.dot(X, self.parameters))**2)
-            return self.parameters[:, 1:], self.parameters[:, 0]
+            return self.parameters[1:], self.parameters[0]
 
     def predict(self, X):
-        if self.metod == "GD":
+        if self.method == "GD":
             return np.dot(X, self.weights) + self.bias
         elif self.method == "OLS":
             if len(set(X[:, 0])) != 1:
-                X = np.append(X, np.ones(X.shape[0], 1), 1)
+                X = np.append(X, np.ones((X.shape[0], 1)), 1)
             return np.dot(X, self.parameters) + self.residual
 
     def cost_fn(self, y, y_pred):

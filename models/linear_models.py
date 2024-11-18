@@ -18,7 +18,7 @@ class LinearRegression:
         self.weights = None
         self.bias = 0
     
-    def fit(self, X, y, iterations=1_300):
+    def fit(self, X, y, iterations=1_500):
         # GD stands for Gradient Descent optimization method
         # Read the details in Journal.md
         m_samples, n_features = X.shape
@@ -33,10 +33,10 @@ class LinearRegression:
                 print(f"Iteration: {iteration} | Cost: {cost}")
 
                 # UPDATE:
-                dw = np.dot(X.T, (prediction - y))
+                dw = 1 / m_samples * np.dot(X.T, (prediction - y))
                 self.weights -= self.learning_rate * dw
                 if self.fit_intercept:
-                    db = np.sum((prediction - y))
+                    db = 1 / m_samples * np.sum((prediction - y))
                     self.bias -= self.learning_rate * db
             
             return self.weights, self.bias
@@ -59,4 +59,3 @@ class LinearRegression:
     def cost_fn(self, y, y_pred):
         # MSE
         return (1 / y.shape[0]) * np.sum((y_pred - y)**2)
-    

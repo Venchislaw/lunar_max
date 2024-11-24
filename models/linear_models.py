@@ -11,16 +11,18 @@ import numpy as np
 
 # CODE IS NOT TESTED SORRY
 class LinearRegression:
-    def __init__(self, learning_rate=0.001, fit_intercept=True, method="GD"):
-        self.learning_rate = learning_rate
+    def __init__(self, fit_intercept=True, method="GD"):
+        self.learning_rate = 0.001
         self.fit_intercept = fit_intercept
         self.method = method
         self.weights = None
         self.bias = 0
+        self.history = []
     
-    def fit(self, X, y, iterations=1_500):
+    def fit(self, X, y, iterations=1_500, learning_rate=None, verbose=10):
         # GD stands for Gradient Descent optimization method
         # Read the details in Journal.md
+        if learning_rate: self.learning_rate = learning_rate
         m_samples, n_features = X.shape
         if self.method == "GD":
             if len(y.shape) == 1:
@@ -30,7 +32,9 @@ class LinearRegression:
             for iteration in range(iterations):
                 prediction = self.predict(X)
                 cost = self.cost_fn(y, prediction)
-                print(f"Iteration: {iteration} | Cost: {cost}")
+                self.history.append(cost)
+                if iteration % verbose == 0:
+                    print(f"Iteration: {iteration} | Cost: {cost}")
 
                 # UPDATE:
                 dw = 1 / m_samples * np.dot(X.T, (prediction - y))

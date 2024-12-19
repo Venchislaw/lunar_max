@@ -62,4 +62,51 @@ class LinearRegression:
 
     def cost_fn(self, y, y_pred):
         # MSE
-        return (1 / y.shape[0]) * np.sum((y_pred - y)**2)
+        return (1 / y.shape[0]) * np.sum((y_pred - y)**2)i
+
+
+# Classification
+
+
+class LogisticRegression:
+    def __init__(self):
+        self.learning_rate = 0.001
+        self.weights = None
+        self.bias = 0
+        self.history = []
+
+    def fit(self, X, y, iterations, learning_rate=None, verbose=10):
+        if not self.weights:
+            m_samples, n_features = X.shape
+            self.weights = np.zeros((n_features, 1))
+
+        if learning_rate: self.learning_rate = learning_rate
+
+        for iteration in range(iterations):
+            prediction = self.predict(X)
+            cost = self.cost_fn(y, prediction)
+            if iteration % verbose == 0:
+                print(f"Iteration: {iteration} Cost: {cost}")
+
+            dw = 1 / m_samples * np.dot(X.T, (prediction - y))
+            db = 1 / m_samples * np.sum(prediction - y)
+
+            self.weights -= learning_rate * dw
+            self.bias -= learning_rate * db
+
+        return self.weights, self.bias
+
+    def predict(self, X):
+        return self.sigmoid(np.dot(X, self.weights) + self.bias)
+
+    def cost_fn(self, y, y_pred):
+        return np.mean(-y * np.log(y_pred + 1e-7) + (1 - y) * np.log(1 - y_pred + 1e-7), axis=0)
+
+    def sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
+
+# NOTES:
+# 1) This is a cool pet-project to keep while studying theoretical aspects
+# 2) Create Model class to avoid redundancy
+# 3) Test logistic regression, because it's not tested
+# 4) Add other cost functions

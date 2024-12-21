@@ -62,7 +62,7 @@ class LinearRegression:
 
     def cost_fn(self, y, y_pred):
         # MSE
-        return (1 / y.shape[0]) * np.sum((y_pred - y)**2)i
+        return (1 / y.shape[0]) * np.sum((y_pred - y)**2)
 
 
 # Classification
@@ -91,8 +91,8 @@ class LogisticRegression:
             dw = 1 / m_samples * np.dot(X.T, (prediction - y))
             db = 1 / m_samples * np.sum(prediction - y)
 
-            self.weights -= learning_rate * dw
-            self.bias -= learning_rate * db
+            self.weights -= self.learning_rate * dw
+            self.bias -= self.learning_rate * db
 
         return self.weights, self.bias
 

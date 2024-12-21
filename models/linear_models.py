@@ -7,23 +7,20 @@ KurwAI labs. MIT License. Free to copy, use, share
 
 
 import numpy as np
+from .model import Model
 
 
 # CODE IS NOT TESTED SORRY
-class LinearRegression:
+class LinearRegression(Model):
     def __init__(self, fit_intercept=True, method="GD"):
-        self.learning_rate = 0.001
+        super().__init__()
         self.fit_intercept = fit_intercept
         self.method = method
-        self.weights = None
-        self.bias = 0
-        self.history = []
     
     def fit(self, X, y, iterations=1_500, learning_rate=None, verbose=10):
         # GD stands for Gradient Descent optimization method
         # Read the details in Journal.md
-        if learning_rate: self.learning_rate = learning_rate
-        m_samples, n_features = X.shape
+        m_samples, n_features = super().fit(X, y, iterations, learning_rate)
         if self.method == "GD":
             if len(y.shape) == 1:
                 y = y.reshape(1, -1)
@@ -68,20 +65,12 @@ class LinearRegression:
 # Classification
 
 
-class LogisticRegression:
+class LogisticRegression(Model):
     def __init__(self):
-        self.learning_rate = 0.001
-        self.weights = None
-        self.bias = 0
-        self.history = []
+        super().__init__()
 
     def fit(self, X, y, iterations, learning_rate=None, verbose=10):
-        if not self.weights:
-            m_samples, n_features = X.shape
-            self.weights = np.zeros((n_features, 1))
-
-        if learning_rate: self.learning_rate = learning_rate
-
+        m_samples, n_features = super().fit(X, y, iterations, learning_rate)
         for iteration in range(iterations):
             prediction = self.predict(X)
             cost = self.cost_fn(y, prediction)
